@@ -17,13 +17,14 @@ namespace ContactEase
 
         private void InitializeComponent()
         {   
+            this.SuspendLayout();
             // 
             // Form1
             // 
-            this.ClientSize = new System.Drawing.Size(1128, 664);
+            this.ClientSize = new System.Drawing.Size(1567, 705);
+            this.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.Name = "Form1";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
     }

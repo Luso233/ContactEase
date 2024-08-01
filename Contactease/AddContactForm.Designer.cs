@@ -146,15 +146,15 @@ namespace ContactEase
             // 
             this.lblFotoPath.AutoSize = true;
             this.lblFotoPath.Location = new System.Drawing.Point(23, 167);
-            this.lblFotoPath.Name = "FotoPath";
-            this.lblFotoPath.Size = new System.Drawing.Size(35, 13);
+            this.lblFotoPath.Name = "lblFotoPath";
+            this.lblFotoPath.Size = new System.Drawing.Size(50, 13);
             this.lblFotoPath.TabIndex = 12;
             this.lblFotoPath.Text = "FotoPath";
             // 
             // txtFotoPath
             // 
             this.txtFotoPath.Location = new System.Drawing.Point(100, 167);
-            this.txtFotoPath.Name = "FotoPath";
+            this.txtFotoPath.Name = "txtFotoPath";
             this.txtFotoPath.Size = new System.Drawing.Size(200, 20);
             this.txtFotoPath.TabIndex = 13;
             // 
@@ -177,6 +177,7 @@ namespace ContactEase
             this.Controls.Add(this.chkFavorite);
             this.Name = "AddContactForm";
             this.Text = "Add Contact";
+            this.Load += new System.EventHandler(this.AddContactForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

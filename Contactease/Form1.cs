@@ -1,37 +1,36 @@
-﻿using ContactEase;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using CsvHelper;
 using CsvHelper.Configuration;
 using MySql.Data.MySqlClient;
-using System.Windows.Forms;
-using Contactease;
-using System.Net.Sockets;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace ContactEase
 {
     public partial class Form1 : Form
     {
-        private readonly List<Contact> contactos; // Definir contactos como un campo de clase
-        private TableLayoutPanel tableLayoutPanel; // Definir el TableLayoutPanel como un campo de clase
-        private ComboBox comboBoxOrden; // Definir el ComboBox como un campo de clase
-        private TextBox searchBar; // Definir la barra de búsqueda como un campo de clase
+        private readonly int _userId;
+        private readonly List<Contact> contactos;
+        private TableLayoutPanel tableLayoutPanel;
+        private ComboBox comboBoxOrden;
+        private TextBox searchBar;
+        private readonly string connectionString = "Server=127.0.0.1; Port=3306; User ID=id22398096_luso; Password=Socima66; Database=contactease;";
 
-        public Form1()
+        public Form1(int userId)
         {
             InitializeComponent();
-            TestDatabaseConnection();
             InitializeCustomComponents();
-            // Inicializar la lista de contactos
+            InitializeNavigationBar();
             contactos = new List<Contact>();
-            CargarContactos();
+            CargarContactosDesdeBaseDeDatos();
+           
         }
-
-
 
         private void AddContactToList(Contact newContact)
         {
@@ -56,6 +55,21 @@ namespace ContactEase
                     };
 
                     AddContactToList(newContact);
+                    GuardarContactoEnBaseDeDatos(newContact);
+                }
+            }
+        }
+
+        private void BtnExport_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "CSV Files|*.csv|VCF Files|*.vcf|All Files|*.*";
+                saveFileDialog.Title = "Guardar Contactos";
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string format = Path.GetExtension(saveFileDialog.FileName).ToLower() == ".csv" ? "csv" : "vcf";
+                    ExportContacts(saveFileDialog.FileName, format);
                 }
             }
         }
@@ -85,7 +99,6 @@ namespace ContactEase
                             writer.WriteLine("END:VCARD");
                         }
                     }
-                    // Añadir más formatos según sea necesario
                 }
                 MessageBox.Show("Contactos exportados exitosamente.");
             }
@@ -95,82 +108,119 @@ namespace ContactEase
             }
         }
 
-        private void BtnExport_Click(object sender, EventArgs e)
+        public class Importer
         {
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-            {
-                saveFileDialog.Filter = "CSV Files|*.csv|VCF Files|*.vcf|All Files|*.*";
-                saveFileDialog.Title = "Guardar Contactos";
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    string format = Path.GetExtension(saveFileDialog.FileName).ToLower() == ".csv" ? "csv" : "vcf";
-                    ExportContacts(saveFileDialog.FileName, format);
-                }
-            }
-        }
+            private readonly Form1 formInstance;
+            private readonly string connectionString;
 
-        private void ImportContacts(string filePath, string format)
-        {
-            try
+            public Importer(Form1 form, string dbConnectionString)
             {
-                using (StreamReader reader = new StreamReader(filePath))
+                formInstance = form;
+                connectionString = dbConnectionString;
+            }
+
+            public void ImportContacts(string filePath, string format)
+            {
+                try
                 {
                     if (format == "csv")
                     {
-                        string line;
-                        reader.ReadLine(); // Saltar el encabezado
-                        while ((line = reader.ReadLine()) != null)
-                        {
-                            var values = line.Split(',');
-                            var newContact = new Contact
-                            {
-                                FirstName = values[0],
-                                LastName = values[1],
-                                Phone = values[2],
-                                Email = values[3],
-                                IsFavorite = bool.Parse(values[4]),
-                                FotoPath = values[5]
-                            };
-                            AddContactToList(newContact);
-                        }
+                        ImportContactsFromCsv(filePath);
                     }
                     else if (format == "vcf")
                     {
-                        string line;
-                        Contact newContact = null;
-                        while ((line = reader.ReadLine()) != null)
+                        ImportContactsFromVcf(filePath);
+                    }
+
+                    MessageBox.Show("Contactos importados exitosamente.");
+                    formInstance.CargarContactosDesdeBaseDeDatos(); // Actualizar la interfaz después de la importación
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al importar contactos: " + ex.Message);
+                }
+            }
+
+            private void ImportContactsFromCsv(string filePath)
+            {
+                var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+                {
+                    HeaderValidated = null,
+                    MissingFieldFound = null
+                };
+
+                using (var reader = new StreamReader(filePath))
+                using (var csv = new CsvReader(reader, config))
+                {
+                    var records = csv.GetRecords<Contact>().ToList();
+                    using (var connection = new MySqlConnection(connectionString))
+                    {
+                        connection.Open();
+                        foreach (var contact in records)
                         {
-                            if (line.StartsWith("BEGIN:VCARD"))
-                            {
-                                newContact = new Contact();
-                            }
-                            else if (line.StartsWith("FN:"))
-                            {
-                                var names = line.Substring(3).Split(' ');
-                                newContact.FirstName = names[0];
-                                newContact.LastName = names[1];
-                            }
-                            else if (line.StartsWith("TEL:"))
-                            {
-                                newContact.Phone = line.Substring(4);
-                            }
-                            else if (line.StartsWith("EMAIL:"))
-                            {
-                                newContact.Email = line.Substring(6);
-                            }
-                            else if (line.StartsWith("END:VCARD"))
-                            {
-                                AddContactToList(newContact);
-                            }
+                            var command = new MySqlCommand("INSERT INTO contacts (FirstName, LastName, Phone, Email, IsFavorite, FotoPath) VALUES (@FirstName, @LastName, @Phone, @Email, @IsFavorite, @FotoPath)", connection);
+                            command.Parameters.AddWithValue("@FirstName", contact.FirstName);
+                            command.Parameters.AddWithValue("@LastName", contact.LastName);
+                            command.Parameters.AddWithValue("@Phone", contact.Phone);
+                            command.Parameters.AddWithValue("@Email", contact.Email);
+                            command.Parameters.AddWithValue("@IsFavorite", contact.IsFavorite);
+                            command.Parameters.AddWithValue("@FotoPath", contact.FotoPath);
+                            command.ExecuteNonQuery();
                         }
                     }
-                    // Añadir más formatos según sea necesario
                 }
-                MessageBox.Show("Contactos importados exitosamente.");
             }
-            catch (Exception ex)
+
+            private void ImportContactsFromVcf(string filePath)
             {
-                MessageBox.Show("Error al importar contactos: " + ex.Message);
+                var contacts = new List<Contact>();
+
+                using (StreamReader reader = new StreamReader(filePath))
+                {
+                    string line;
+                    Contact newContact = null;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        if (line.StartsWith("BEGIN:VCARD"))
+                        {
+                            newContact = new Contact();
+                        }
+                        else if (line.StartsWith("FN:"))
+                        {
+                            var names = line.Substring(3).Split(' ');
+                            newContact.FirstName = names[0];
+                            newContact.LastName = names.Length > 1 ? names[1] : string.Empty;
+                        }
+                        else if (line.StartsWith("TEL:"))
+                        {
+                            newContact.Phone = line.Substring(4);
+                        }
+                        else if (line.StartsWith("EMAIL:"))
+                        {
+                            newContact.Email = line.Substring(6);
+                        }
+                        else if (line.StartsWith("END:VCARD"))
+                        {
+                            contacts.Add(newContact);
+                        }
+                    }
+                }
+
+                using (var connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+                    foreach (var contact in contacts)
+                    {
+                        var command = new MySqlCommand("INSERT INTO contacts (FirstName, LastName, Phone, Email, IsFavorite, FotoPath) VALUES (@FirstName, @LastName, @Phone, @Email, @IsFavorite, @FotoPath)", connection);
+                        command.Parameters.AddWithValue("@FirstName", contact.FirstName);
+                        command.Parameters.AddWithValue("@LastName", contact.LastName);
+                        command.Parameters.AddWithValue("@Phone", contact.Phone);
+                        command.Parameters.AddWithValue("@Email", contact.Email);
+                        command.Parameters.AddWithValue("@IsFavorite", contact.IsFavorite);
+                        command.Parameters.AddWithValue("@FotoPath", contact.FotoPath);
+                        command.ExecuteNonQuery();
+                    }
+                }
             }
         }
 
@@ -179,247 +229,394 @@ namespace ContactEase
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "CSV Files|*.csv|VCF Files|*.vcf|All Files|*.*";
-                openFileDialog.Title = "Abrir Contactos";
+                openFileDialog.Title = "Importar Contactos";
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string format = Path.GetExtension(openFileDialog.FileName).ToLower() == ".csv" ? "csv" : "vcf";
-                    ImportContacts(openFileDialog.FileName, format);
+                    Importer importer = new Importer(this, connectionString); // Pasar 'this' para la instancia de Form1
+                    importer.ImportContacts(openFileDialog.FileName, format);
                 }
             }
         }
 
+
+
+
+        private void BtnEditContact_Click(object sender, EventArgs e)
+        {
+            Contact selectedContact = GetSelectedContact();
+            if (selectedContact != null)
+            {
+                EditContactForm editForm = new EditContactForm(selectedContact);
+
+                if (editForm.ShowDialog() == DialogResult.OK)
+                {
+                    // Actualizar los valores del contacto con los valores del formulario de edición
+                    selectedContact.FirstName = editForm.FirstName;
+                    selectedContact.LastName = editForm.LastName;
+                    selectedContact.Phone = editForm.Phone;
+                    selectedContact.Email = editForm.Email;
+                    selectedContact.IsFavorite = editForm.IsFavorite;
+                    selectedContact.FotoPath = editForm.FotoPath;
+
+                    // Llamar al método para actualizar el contacto en la base de datos
+                    ActualizarContactoEnBaseDeDatos(selectedContact);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Selecciona un contacto para editar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+
+
         private void InitializeCustomComponents()
         {
-            // Set form properties
             this.Text = "ContactEase";
             this.WindowState = FormWindowState.Maximized;
-            this.BackColor = Color.FromArgb(15, 15, 15); // Dark background color
+            this.BackColor = Color.FromArgb(15, 15, 15);
+            this.Font = new Font("Segoe UI", 10, FontStyle.Regular); // Cambiar la fuente
 
-            // Create and configure the top panel
             Panel topPanel = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 80, // Increased height to accommodate logo
-                BackColor = Color.FromArgb(29, 29, 29), // Darker panel background
-                Padding = new Padding(10) // Add padding to avoid overlapping
+                Height = 100, // Incrementar la altura del panel superior
+                BackColor = Color.FromArgb(29, 29, 29),
+                Padding = new Padding(10)
             };
 
-            // Create and configure the logo
             PictureBox logoPictureBox = new PictureBox
             {
-                Image = Image.FromFile(@"C:\Users\luisf\source\repos\Contactease\Contactease\Carpeta\Favoriteicon.jpg"), // Path to logo image file
+                Image = Image.FromFile(@"C:\Users\luisf\source\repos\Contactease\Contactease\Carpeta\Favoriteicon.jpg"),
                 SizeMode = PictureBoxSizeMode.Zoom,
                 Size = new Size(50, 50),
-                Location = new Point(10, 15)
+                Location = new Point(10, 25) // Ajustar la posición
             };
 
-            // Create and configure the search bar
             searchBar = new TextBox
             {
-                // PlaceholderText = "Buscar...",
                 Width = 200,
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(45, 45, 45),
-                Font = new Font("Arial", 12, FontStyle.Regular),
-                Top = 15,
-                Left = 70
+                Location = new Point(70, 35), // Ajustar la posición
+                                              //PlaceholderText = "Buscar..."
             };
-            searchBar.TextChanged += SearchBar_TextChanged;
+            searchBar.TextChanged += (s, e) => BuscarContactos(searchBar.Text);
 
-            // Create and configure the dropdown menu
             comboBoxOrden = new ComboBox
             {
-                Top = 15,
-                Left = searchBar.Right + 10,
                 Width = 150,
-                DropDownStyle = ComboBoxStyle.DropDownList,
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(45, 45, 45),
-                Font = new Font("Arial", 12, FontStyle.Regular) // Set font
+                Location = new Point(280, 35) // Ajustar la posición
             };
-            comboBoxOrden.Items.AddRange(new object[] { "Alfabético", "Favoritos" });
-            comboBoxOrden.SelectedIndexChanged += ComboBoxOrden_SelectedIndexChanged;
+            comboBoxOrden.Items.AddRange(new[] { "Alfabético", "Favoritos" });
+            comboBoxOrden.SelectedIndexChanged += (s, e) => OrdenarContactos(comboBoxOrden.SelectedItem.ToString());
 
-            // Create and configure buttons with improved design
-            Button addButton = CreateCustomButton("Agregar Contacto", searchBar.Right + 200);
-            addButton.Click += BtnAddContact_Click;
-            Button exportButton = CreateCustomButton("Exportar Contacto", addButton.Right + 10);
-            exportButton.Click += BtnExport_Click;
-            Button importButton = CreateCustomButton("Importar Contacto", exportButton.Right + 10);
-            importButton.Click += BtnImport_Click;
-            Button logoutButton = CreateCustomButton("Cerrar sesión", importButton.Right + 700); // Adjust position
+            Button btnAddContact = new Button
+            {
+                Text = "Agregar Contacto",
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(45, 45, 45),
+                FlatStyle = FlatStyle.Flat,
+                Location = new Point(450, 35) // Ajustar la posición
+            };
+            btnAddContact.FlatAppearance.BorderColor = Color.FromArgb(192, 0, 0);
+            btnAddContact.Click += BtnAddContact_Click;
+            EstilizarBoton(btnAddContact); // Estilizar botón
 
-            // Add controls to the top panel
+            Button btnExport = new Button
+            {
+                Text = "Exportar",
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(45, 45, 45),
+                FlatStyle = FlatStyle.Flat,
+                Location = new Point(600, 35) // Ajustar la posición
+            };
+            btnExport.FlatAppearance.BorderColor = Color.FromArgb(192, 0, 0);
+            btnExport.Click += BtnExport_Click;
+            EstilizarBoton(btnExport); // Estilizar botón
+
+            Button btnImport = new Button
+            {
+                Text = "Importar",
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(45, 45, 45),
+                FlatStyle = FlatStyle.Flat,
+                Location = new Point(700, 35) // Ajustar la posición
+            };
+            btnImport.FlatAppearance.BorderColor = Color.FromArgb(192, 0, 0);
+            btnImport.Click += BtnImport_Click;
+            EstilizarBoton(btnImport); // Estilizar botón
+
+            Button btnLogout = new Button
+            {
+                Text = "Cerrar sesión",
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(45, 45, 45),
+                FlatStyle = FlatStyle.Flat,
+                Location = new Point(800, 35), // Ajustar la posición
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
+            };
+            btnLogout.FlatAppearance.BorderColor = Color.FromArgb(192, 0, 0);
+            btnLogout.Click += (s, e) => this.Close();
+            EstilizarBoton(btnLogout); // Estilizar botón
+
             topPanel.Controls.Add(logoPictureBox);
             topPanel.Controls.Add(searchBar);
             topPanel.Controls.Add(comboBoxOrden);
-            topPanel.Controls.Add(addButton);
-            topPanel.Controls.Add(exportButton);
-            topPanel.Controls.Add(importButton);
-            topPanel.Controls.Add(logoutButton);
+            topPanel.Controls.Add(btnAddContact);
+            topPanel.Controls.Add(btnExport);
+            topPanel.Controls.Add(btnImport);
+            topPanel.Controls.Add(btnLogout);
+            this.Controls.Add(topPanel);
 
-            // Create and configure the TableLayoutPanel
             tableLayoutPanel = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 4,
                 AutoScroll = true,
-                BackColor = Color.FromArgb(24, 24, 24) // Slightly lighter background for contrast
+                Padding = new Padding(10, 100, 10, 100)
             };
-            tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F)); // Profile picture
-            tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F)); // Name
-            tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F)); // Phone
-            tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F)); // Email
 
-            // Add panels to the form
+            for (int i = 0; i < 4; i++)
+            {
+                tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            }
+
             this.Controls.Add(tableLayoutPanel);
-            this.Controls.Add(topPanel);
-
-            // Set TableLayoutPanel as a class field for easier access
-            //this.tableLayoutPanel = tableLayoutPanel;
         }
 
-        private Button CreateCustomButton(string text, int leftPosition)
+
+
+        private void InitializeNavigationBar()
         {
-            return new Button
+            Panel bottomPanel = new Panel
             {
-                Text = text,
-                ForeColor = Color.White,
-                BackColor = Color.FromArgb(35, 35, 35), // Dark button background
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Arial", 10, FontStyle.Regular), // Font size reduced
-                Size = new Size(150, 40), // Adjusted size
-                Left = leftPosition,
-                Top = 15
+                Dock = DockStyle.Bottom,
+                Height = 70, // Incrementar la altura del panel inferior
+                BackColor = Color.FromArgb(29, 29, 29),
+                Padding = new Padding(10)
             };
-        }
 
-        private void SearchBar_TextChanged(object sender, EventArgs e)
-        {
-            string searchTerm = searchBar.Text.ToLower();
-            var filteredContacts = contactos.Where(c => c.FirstName.ToLower().Contains(searchTerm) || c.LastName.ToLower().Contains(searchTerm)).ToList();
-            ActualizarInterfaz(filteredContacts);
-        }
-
-        private void ComboBoxOrden_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (comboBoxOrden.SelectedItem.ToString() == "Favoritos")
+            Label lblContactos = new Label
             {
-                var favoriteContacts = contactos.Where(c => c.IsFavorite).ToList();
-                ActualizarInterfaz(favoriteContacts);
-            }
-            else
+                Text = "Contactos",
+                ForeColor = Color.White,
+                AutoSize = true,
+                Location = new Point(20, 20) // Ajustar la posición
+            };
+
+            Label lblMensajes = new Label
             {
-                ActualizarInterfaz(contactos.OrderBy(c => c.FirstName).ToList());
-            }
+                Text = "Mensajes",
+                ForeColor = Color.White,
+                AutoSize = true,
+                Location = new Point(this.Width / 2 - 30, 20) // Ajustar la posición
+            };
+
+            PictureBox profilePictureBox = new PictureBox
+            {
+                Image = Image.FromFile(@"C:\Users\luisf\source\repos\Contactease\Contactease\Carpeta\Favoriteicon.jpg"),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Size = new Size(30, 30),
+                Location = new Point(this.Width - 50, 20) // Ajustar la posición
+            };
+
+            bottomPanel.Controls.Add(lblContactos);
+            bottomPanel.Controls.Add(lblMensajes);
+            bottomPanel.Controls.Add(profilePictureBox);
+            this.Controls.Add(bottomPanel);
         }
 
-        private void ActualizarInterfaz(List<Contact> contactosActualizados)
+
+        private void ActualizarInterfaz(List<Contact> contactos)
         {
             tableLayoutPanel.Controls.Clear();
-
-            foreach (var contact in contactosActualizados)
+            foreach (var contacto in contactos)
             {
-                // Add profile picture
-                PictureBox profilePicture = new PictureBox
-                {
-                    Size = new Size(50, 50),
-                    ImageLocation = contact.FotoPath,
-                    SizeMode = PictureBoxSizeMode.Zoom,
-                    Dock = DockStyle.Fill
-                };
-
-                // Ensure all images are the same size
-                profilePicture.SizeMode = PictureBoxSizeMode.Zoom;
-                profilePicture.Width = 50;
-                profilePicture.Height = 50;
-
-                // Add name and surname
-                Label nameLabel = new Label
-                {
-                    Text = $"{contact.FirstName} {contact.LastName}",
-                    ForeColor = Color.White,
-                    Dock = DockStyle.Fill,
-                    TextAlign = ContentAlignment.MiddleLeft,
-                    Font = new Font("Arial", 12, FontStyle.Regular)
-                };
-
-                // Add phone number
-                Label phoneLabel = new Label
-                {
-                    Text = contact.Phone,
-                    ForeColor = Color.White,
-                    Dock = DockStyle.Fill,
-                    TextAlign = ContentAlignment.MiddleLeft,
-                    Font = new Font("Arial", 12, FontStyle.Regular)
-                };
-
-                // Add email address
-                Label emailLabel = new Label
-                {
-                    Text = contact.Email,
-                    ForeColor = Color.White,
-                    Dock = DockStyle.Fill,
-                    TextAlign = ContentAlignment.MiddleLeft,
-                    Font = new Font("Arial", 12, FontStyle.Regular)
-                };
-
-                tableLayoutPanel.Controls.Add(profilePicture);
-                tableLayoutPanel.Controls.Add(nameLabel);
-                tableLayoutPanel.Controls.Add(phoneLabel);
-                tableLayoutPanel.Controls.Add(emailLabel);
+                AgregarContactoATabla(contacto);
             }
         }
 
-        private void CargarContactos()
+        private void EstilizarBoton(Button button)
         {
-            // Implementar la lógica para cargar contactos desde una base de datos u otra fuente
-            // Por ahora, agregamos algunos contactos de ejemplo
+            button.FlatAppearance.BorderColor = Color.FromArgb(192, 0, 0);
+            button.FlatStyle = FlatStyle.Flat;
+            button.Font = new Font("Segoe UI", 10, FontStyle.Regular); // Fuente profesional
+            button.Padding = new Padding(5);
+        }
 
-            contactos.Add(new Contact
+
+        private void GuardarContactoEnBaseDeDatos(Contact contact)
+        {
+            using (var connection = new MySqlConnection(connectionString))
             {
-                FirstName = "Juan",
-                LastName = "Pérez",
-                Phone = "1234567890",
-                Email = "juan.perez@example.com",
-                IsFavorite = false,
-                FotoPath = @"C:\Users\luisf\source\repos\Contactease\Contactease\Carpeta\Default.jpg"
-            });
+                connection.Open();
+                var command = new MySqlCommand("INSERT INTO contacts (FirstName, LastName, Phone, Email, IsFavorite, FotoPath) VALUES (@FirstName, @LastName, @Phone, @Email, @IsFavorite, @FotoPath)", connection);
+                command.Parameters.AddWithValue("@FirstName", contact.FirstName);
+                command.Parameters.AddWithValue("@LastName", contact.LastName);
+                command.Parameters.AddWithValue("@Phone", contact.Phone);
+                command.Parameters.AddWithValue("@Email", contact.Email);
+                command.Parameters.AddWithValue("@IsFavorite", contact.IsFavorite);
+                command.Parameters.AddWithValue("@FotoPath", contact.FotoPath);
+                command.ExecuteNonQuery();
+            }
+        }
 
-            contactos.Add(new Contact
+        private void AgregarContactoATabla(Contact contact)
+        {
+            Panel contactPanel = new Panel
             {
-                FirstName = "María",
-                LastName = "González",
-                Phone = "0987654321",
-                Email = "maria.gonzalez@example.com",
-                IsFavorite = true,
-                FotoPath = @"C:\Users\luisf\source\repos\Contactease\Contactease\Carpeta\Default.jpg"
-            });
+                Height = 100,
+                Dock = DockStyle.Top,
+                Margin = new Padding(10),
+                BackColor = Color.FromArgb(45, 45, 45)
+            };
 
-            // Añadir más contactos de ejemplo aquí
+            PictureBox fotoPictureBox = new PictureBox
+            {
+                Size = new Size(80, 80),
+                Location = new Point(10, 10),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Image = Image.FromFile(string.IsNullOrEmpty(contact.FotoPath) ? @"C:\Users\luisf\source\repos\Contactease\Contactease\Carpeta\Favoriteicon.jpg" : contact.FotoPath)
+            };
 
+            Label nombreLabel = new Label
+            {
+                Text = $"{contact.FirstName} {contact.LastName}",
+                ForeColor = Color.White,
+                AutoSize = true,
+                Location = new Point(100, 10),
+                Font = new Font("Arial", 14, FontStyle.Bold)
+            };
+
+            Label telefonoLabel = new Label
+            {
+                Text = contact.Phone,
+                ForeColor = Color.White,
+                AutoSize = true,
+                Location = new Point(100, 40),
+                Font = new Font("Arial", 12)
+            };
+
+            Label emailLabel = new Label
+            {
+                Text = contact.Email,
+                ForeColor = Color.White,
+                AutoSize = true,
+                Location = new Point(100, 70),
+                Font = new Font("Arial", 12)
+            };
+
+            contactPanel.Click += (s, e) =>
+            {
+                using (var editContactForm = new EditContactForm(contact))
+                {
+                    if (editContactForm.ShowDialog() == DialogResult.OK)
+                    {
+                        contact.FirstName = editContactForm.FirstName;
+                        contact.LastName = editContactForm.LastName;
+                        contact.Phone = editContactForm.Phone;
+                        contact.Email = editContactForm.Email;
+                        contact.IsFavorite = editContactForm.IsFavorite;
+                        contact.FotoPath = editContactForm.FotoPath;
+
+                        ActualizarInterfaz(contactos);
+                        ActualizarContactoEnBaseDeDatos(contact);
+                    }
+                }
+            };
+
+            contactPanel.Controls.Add(fotoPictureBox);
+            contactPanel.Controls.Add(nombreLabel);
+            contactPanel.Controls.Add(telefonoLabel);
+            contactPanel.Controls.Add(emailLabel);
+            tableLayoutPanel.Controls.Add(contactPanel);
+        }
+
+        private void CargarContactosDesdeBaseDeDatos()
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                var command = new MySqlCommand("SELECT * FROM contacts", connection);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var contact = new Contact
+                        {
+                            FirstName = reader["FirstName"].ToString(),
+                            LastName = reader["LastName"].ToString(),
+                            Phone = reader["Phone"].ToString(),
+                            Email = reader["Email"].ToString(),
+                            IsFavorite = Convert.ToBoolean(reader["IsFavorite"]),
+                            FotoPath = reader["FotoPath"].ToString()
+                        };
+                        contactos.Add(contact);
+                    }
+                }
+            }
             ActualizarInterfaz(contactos);
         }
 
-        private void TestDatabaseConnection()
+
+        private void ActualizarContactoEnBaseDeDatos(Contact contact)
         {
-            // Utiliza el hostname y la IP proporcionados
-             string connectionString = "Server=127.0.0.1; Port=3306; User ID=id22398096_luso; Password=Socima66; Database=contactease;";
-
-            ;
-
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            using (var connection = new MySqlConnection(connectionString))
             {
-                try
-                {
-                    connection.Open();
-                    MessageBox.Show("Connection to database successful!");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error connecting to the database: " + ex.Message);
-                }
+                connection.Open();
+                var command = new MySqlCommand("UPDATE contacts SET FirstName = @FirstName, LastName = @LastName, Phone = @Phone, Email = @Email, IsFavorite = @IsFavorite, FotoPath = @FotoPath WHERE ContactID = @ContactID", connection);
+                command.Parameters.AddWithValue("@FirstName", contact.FirstName);
+                command.Parameters.AddWithValue("@LastName", contact.LastName);
+                command.Parameters.AddWithValue("@Phone", contact.Phone);
+                command.Parameters.AddWithValue("@Email", contact.Email);
+                command.Parameters.AddWithValue("@IsFavorite", contact.IsFavorite);
+                command.Parameters.AddWithValue("@FotoPath", contact.FotoPath);
+                command.Parameters.AddWithValue("@ContactID", contact.ContactID);
+                command.ExecuteNonQuery();
             }
+            ActualizarInterfaz(contactos); // Actualizar la interfaz después de la edición
         }
+
+        private Contact GetSelectedContact()
+        {
+            // Implementa la lógica para obtener el contacto seleccionado de la lista
+            return new Contact();
+        }
+
+        private void BuscarContactos(string searchTerm)
+        {
+            var filteredContacts = contactos.Where(c => c.FirstName.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                                        c.LastName.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                                        c.Phone.IndexOf(searchTerm) >= 0 ||
+                                                        c.Email.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            ActualizarInterfaz(filteredContacts);
+        }
+
+
+        private void OrdenarContactos(string orden)
+        {
+            List<Contact> sortedContacts;
+            if (orden == "Alfabético")
+            {
+                sortedContacts = contactos.OrderBy(c => c.FirstName).ThenBy(c => c.LastName).ToList();
+            }
+            else // "Favoritos"
+            {
+                sortedContacts = contactos.OrderByDescending(c => c.IsFavorite).ThenBy(c => c.FirstName).ThenBy(c => c.LastName).ToList();
+            }
+            ActualizarInterfaz(sortedContacts);
+        }
+
+
+
+
+        
     }
+
+    
 }

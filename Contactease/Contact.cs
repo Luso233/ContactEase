@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Contactease
+namespace ContactEase
 {
     public class Contact
         {
-            public string FirstName { get; set; }
+        public int ContactID { get; set; }
+        public string FirstName { get; set; }
             public string LastName { get; set; }
             public string Phone { get; set; }
             public string Email { get; set; }

@@ -59,5 +59,9 @@ namespace ContactEase
             this.Close();
         }
 
+        private void AddContactForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
