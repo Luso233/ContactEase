@@ -15,16 +15,17 @@ namespace ContactEase
 {
     public partial class Form1 : Form
     {
-        private readonly int _userId;
+        private readonly int UserID;
         private readonly List<Contact> contactos;
         private TableLayoutPanel tableLayoutPanel;
         private ComboBox comboBoxOrden;
         private TextBox searchBar;
         private readonly string connectionString = "Server=127.0.0.1; Port=3306; User ID=id22398096_luso; Password=Socima66; Database=contactease;";
 
-        public Form1(int userId)
+        public Form1(int UserID)
         {
             InitializeComponent();
+            this.UserID = UserID;
             InitializeCustomComponents();
             InitializeNavigationBar();
             contactos = new List<Contact>();
@@ -112,11 +113,13 @@ namespace ContactEase
         {
             private readonly Form1 formInstance;
             private readonly string connectionString;
+            private readonly int userId;
 
-            public Importer(Form1 form, string dbConnectionString)
+            public Importer(Form1 form, string dbConnectionString, int userId)
             {
                 formInstance = form;
                 connectionString = dbConnectionString;
+                this.userId = userId;
             }
 
             public void ImportContacts(string filePath, string format)
@@ -158,13 +161,14 @@ namespace ContactEase
                         connection.Open();
                         foreach (var contact in records)
                         {
-                            var command = new MySqlCommand("INSERT INTO contacts (FirstName, LastName, Phone, Email, IsFavorite, FotoPath) VALUES (@FirstName, @LastName, @Phone, @Email, @IsFavorite, @FotoPath)", connection);
+                            var command = new MySqlCommand("INSERT INTO contacts (FirstName, LastName, Phone, Email, IsFavorite, FotoPath, UserID) VALUES (@FirstName, @LastName, @Phone, @Email, @IsFavorite, @FotoPath, @UserID)", connection);
                             command.Parameters.AddWithValue("@FirstName", contact.FirstName);
                             command.Parameters.AddWithValue("@LastName", contact.LastName);
                             command.Parameters.AddWithValue("@Phone", contact.Phone);
                             command.Parameters.AddWithValue("@Email", contact.Email);
                             command.Parameters.AddWithValue("@IsFavorite", contact.IsFavorite);
                             command.Parameters.AddWithValue("@FotoPath", contact.FotoPath);
+                            command.Parameters.AddWithValue("@UserID", userId);
                             command.ExecuteNonQuery();
                         }
                     }
@@ -211,13 +215,14 @@ namespace ContactEase
                     connection.Open();
                     foreach (var contact in contacts)
                     {
-                        var command = new MySqlCommand("INSERT INTO contacts (FirstName, LastName, Phone, Email, IsFavorite, FotoPath) VALUES (@FirstName, @LastName, @Phone, @Email, @IsFavorite, @FotoPath)", connection);
+                        var command = new MySqlCommand("INSERT INTO contacts (FirstName, LastName, Phone, Email, IsFavorite, FotoPath, UserID) VALUES (@FirstName, @LastName, @Phone, @Email, @IsFavorite, @FotoPath, @UserID)", connection);
                         command.Parameters.AddWithValue("@FirstName", contact.FirstName);
                         command.Parameters.AddWithValue("@LastName", contact.LastName);
                         command.Parameters.AddWithValue("@Phone", contact.Phone);
                         command.Parameters.AddWithValue("@Email", contact.Email);
                         command.Parameters.AddWithValue("@IsFavorite", contact.IsFavorite);
                         command.Parameters.AddWithValue("@FotoPath", contact.FotoPath);
+                        command.Parameters.AddWithValue("@UserID", userId);
                         command.ExecuteNonQuery();
                     }
                 }
@@ -233,11 +238,12 @@ namespace ContactEase
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string format = Path.GetExtension(openFileDialog.FileName).ToLower() == ".csv" ? "csv" : "vcf";
-                    Importer importer = new Importer(this, connectionString); // Pasar 'this' para la instancia de Form1
+                    Importer importer = new Importer(this, connectionString, UserID); // Pasar 'UserID' al importador
                     importer.ImportContacts(openFileDialog.FileName, format);
                 }
             }
         }
+
 
 
 
@@ -455,16 +461,18 @@ namespace ContactEase
             using (var connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-                var command = new MySqlCommand("INSERT INTO contacts (FirstName, LastName, Phone, Email, IsFavorite, FotoPath) VALUES (@FirstName, @LastName, @Phone, @Email, @IsFavorite, @FotoPath)", connection);
+                var command = new MySqlCommand("INSERT INTO contacts (FirstName, LastName, Phone, Email, IsFavorite, FotoPath, UserID) VALUES (@FirstName, @LastName, @Phone, @Email, @IsFavorite, @FotoPath, @UserID)", connection);
                 command.Parameters.AddWithValue("@FirstName", contact.FirstName);
                 command.Parameters.AddWithValue("@LastName", contact.LastName);
                 command.Parameters.AddWithValue("@Phone", contact.Phone);
                 command.Parameters.AddWithValue("@Email", contact.Email);
                 command.Parameters.AddWithValue("@IsFavorite", contact.IsFavorite);
                 command.Parameters.AddWithValue("@FotoPath", contact.FotoPath);
+                command.Parameters.AddWithValue("@UserID", UserID);
                 command.ExecuteNonQuery();
             }
         }
+
 
         private void AgregarContactoATabla(Contact contact)
         {
@@ -542,19 +550,20 @@ namespace ContactEase
             using (var connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-                var command = new MySqlCommand("SELECT * FROM contacts", connection);
+                var command = new MySqlCommand("SELECT * FROM contacts WHERE UserID = @UserID", connection);
+                command.Parameters.AddWithValue("@UserID", UserID);
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
                         var contact = new Contact
                         {
-                            FirstName = reader["FirstName"].ToString(),
-                            LastName = reader["LastName"].ToString(),
-                            Phone = reader["Phone"].ToString(),
-                            Email = reader["Email"].ToString(),
-                            IsFavorite = Convert.ToBoolean(reader["IsFavorite"]),
-                            FotoPath = reader["FotoPath"].ToString()
+                            FirstName = reader.GetString("FirstName"),
+                            LastName = reader.GetString("LastName"),
+                            Phone = reader.GetString("Phone"),
+                            Email = reader.GetString("Email"),
+                            IsFavorite = reader.GetBoolean("IsFavorite"),
+                            FotoPath = reader.GetString("FotoPath")
                         };
                         contactos.Add(contact);
                     }
@@ -562,6 +571,7 @@ namespace ContactEase
             }
             ActualizarInterfaz(contactos);
         }
+
 
 
         private void ActualizarContactoEnBaseDeDatos(Contact contact)
@@ -612,10 +622,10 @@ namespace ContactEase
             ActualizarInterfaz(sortedContacts);
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
 
-
-
-        
+        }
     }
 
     

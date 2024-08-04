@@ -1,13 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
-using Org.BouncyCastle.Crypto.Generators;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContactEase
@@ -17,7 +10,6 @@ namespace ContactEase
         public RegisterForm()
         {
             InitializeComponent();
-            // Configura el diseño similar a Form1
         }
 
         private readonly string connectionString = "Server=127.0.0.1; Port=3306; User ID=id22398096_luso; Password=Socima66; Database=contactease;";
@@ -26,7 +18,11 @@ namespace ContactEase
         {
             string username = txtUsername.Text;
             string password = txtPassword.Text;
+            string firstName = txtFirstName.Text;
+            string lastName = txtLastName.Text;
+            string phone = txtPhone.Text;
             string email = txtEmail.Text;
+            string fotoPath = txtFotoPath.Text;
 
             // Verificar si el nombre de usuario o el correo electrónico ya existen
             using (var connection = new MySqlConnection(connectionString))
@@ -45,10 +41,14 @@ namespace ContactEase
                 }
 
                 // Insertar el nuevo usuario
-                var command = new MySqlCommand("INSERT INTO Users (Username, Password, Email) VALUES (@Username, @Password, @Email)", connection);
+                var command = new MySqlCommand("INSERT INTO Users (Username, Password, FirstName, LastName, Phone, Email, FotoPath) VALUES (@Username, @Password, @FirstName, @LastName, @Phone, @Email, @FotoPath)", connection);
                 command.Parameters.AddWithValue("@Username", username);
                 command.Parameters.AddWithValue("@Password", BCrypt.Net.BCrypt.HashPassword(password));
+                command.Parameters.AddWithValue("@FirstName", firstName);
+                command.Parameters.AddWithValue("@LastName", lastName);
+                command.Parameters.AddWithValue("@Phone", phone);
                 command.Parameters.AddWithValue("@Email", email);
+                command.Parameters.AddWithValue("@FotoPath", fotoPath);
                 command.ExecuteNonQuery();
 
                 MessageBox.Show("Usuario registrado exitosamente.");
@@ -63,10 +63,6 @@ namespace ContactEase
 
         }
 
-        private void RegisterForm_Load_1(object sender, EventArgs e)
-        {
-
-        }
+       
     }
-
 }
