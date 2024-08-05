@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace ContactEase
@@ -9,59 +10,167 @@ namespace ContactEase
         public string LastName { get; private set; }
         public string Phone { get; private set; }
         public string Email { get; private set; }
-        public string FotoPath { get; private set; }
         public bool IsFavorite { get; private set; }
+        public string FotoPath { get; private set; }
 
         public AddContactForm()
         {
             InitializeComponent();
-            ApplyCustomDesign();
+            InitializeCustomComponents();
         }
 
-        private void ApplyCustomDesign()
+        private void InitializeComponent()
         {
-            this.BackColor = System.Drawing.Color.FromArgb(45, 45, 48);
-            this.ForeColor = System.Drawing.Color.White;
-            foreach (Control control in this.Controls)
+            this.SuspendLayout();
+            // 
+            // AddContactForm
+            // 
+            this.ClientSize = new System.Drawing.Size(400, 500);
+            this.Name = "AddContactForm";
+            this.Text = "Agregar Contacto";
+            this.ResumeLayout(false);
+        }
+
+        private void InitializeCustomComponents()
+        {
+            this.BackColor = Color.FromArgb(15, 15, 15);
+            this.Font = new Font("Segoe UI", 10, FontStyle.Regular);
+            this.ForeColor = Color.White;
+
+            var lblFirstName = new Label
             {
-                if (control is Label)
+                Text = "Nombre",
+                Location = new Point(30, 30)
+            };
+
+            var txtFirstName = new TextBox
+            {
+                Location = new Point(150, 30),
+                Width = 200,
+                BackColor = Color.FromArgb(45, 45, 45),
+                ForeColor = Color.White
+            };
+
+            var lblLastName = new Label
+            {
+                Text = "Apellido",
+                Location = new Point(30, 80)
+            };
+
+            var txtLastName = new TextBox
+            {
+                Location = new Point(150, 80),
+                Width = 200,
+                BackColor = Color.FromArgb(45, 45, 45),
+                ForeColor = Color.White
+            };
+
+            var lblPhone = new Label
+            {
+                Text = "Teléfono",
+                Location = new Point(30, 130)
+            };
+
+            var txtPhone = new TextBox
+            {
+                Location = new Point(150, 130),
+                Width = 200,
+                BackColor = Color.FromArgb(45, 45, 45),
+                ForeColor = Color.White
+            };
+
+            var lblEmail = new Label
+            {
+                Text = "Correo",
+                Location = new Point(30, 180)
+            };
+
+            var txtEmail = new TextBox
+            {
+                Location = new Point(150, 180),
+                Width = 200,
+                BackColor = Color.FromArgb(45, 45, 45),
+                ForeColor = Color.White
+            };
+
+            var lblIsFavorite = new Label
+            {
+                Text = "Favorito",
+                Location = new Point(30, 230)
+            };
+
+            var chkIsFavorite = new CheckBox
+            {
+                Location = new Point(150, 230),
+                BackColor = Color.FromArgb(45, 45, 45),
+                ForeColor = Color.White
+            };
+
+            var lblFotoPath = new Label
+            {
+                Text = "Foto",
+                Location = new Point(30, 280)
+            };
+
+            var txtFotoPath = new TextBox
+            {
+                Location = new Point(150, 280),
+                Width = 200,
+                BackColor = Color.FromArgb(45, 45, 45),
+                ForeColor = Color.White
+            };
+
+            var btnBrowse = new Button
+            {
+                Text = "Examinar",
+                Location = new Point(360, 280),
+                BackColor = Color.FromArgb(45, 45, 45),
+                ForeColor = Color.White
+            };
+            btnBrowse.Click += (sender, e) =>
+            {
+                using (var openFileDialog = new OpenFileDialog())
                 {
-                    control.ForeColor = System.Drawing.Color.White;
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        txtFotoPath.Text = openFileDialog.FileName;
+                    }
                 }
-                if (control is TextBox)
-                {
-                    control.BackColor = System.Drawing.Color.FromArgb(30, 30, 30);
-                    control.ForeColor = System.Drawing.Color.White;
-                }
-                if (control is Button)
-                {
-                    control.BackColor = System.Drawing.Color.FromArgb(63, 63, 70);
-                    control.ForeColor = System.Drawing.Color.White;
-                }
-            }
-        }
+            };
 
-        private void BtnSave_Click(object sender, EventArgs e)
-        {
-            FirstName = txtFirstName.Text;
-            LastName = txtLastName.Text;
-            Phone = txtPhone.Text;
-            Email = txtEmail.Text;
-            IsFavorite = chkIsFavorite.Checked;
-            FotoPath = txtFotoPath.Text;
-            this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
+            var btnSave = new Button
+            {
+                Text = "Guardar",
+                Location = new Point(150, 350),
+                BackColor = Color.FromArgb(45, 45, 45),
+                ForeColor = Color.White
+            };
+            btnSave.Click += (sender, e) =>
+            {
+                FirstName = txtFirstName.Text;
+                LastName = txtLastName.Text;
+                Phone = txtPhone.Text;
+                Email = txtEmail.Text;
+                IsFavorite = chkIsFavorite.Checked;
+                FotoPath = txtFotoPath.Text;
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            };
 
-        private void BtnCancel_Click(object sender, EventArgs e)
-        {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
-        }
-
-        private void AddContactForm_Load(object sender, EventArgs e)
-        {
-
+            this.Controls.Add(lblFirstName);
+            this.Controls.Add(txtFirstName);
+            this.Controls.Add(lblLastName);
+            this.Controls.Add(txtLastName);
+            this.Controls.Add(lblPhone);
+            this.Controls.Add(txtPhone);
+            this.Controls.Add(lblEmail);
+            this.Controls.Add(txtEmail);
+            this.Controls.Add(lblIsFavorite);
+            this.Controls.Add(chkIsFavorite);
+            this.Controls.Add(lblFotoPath);
+            this.Controls.Add(txtFotoPath);
+            this.Controls.Add(btnBrowse);
+            this.Controls.Add(btnSave);
         }
     }
 }

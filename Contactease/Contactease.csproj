@@ -217,6 +217,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Contact.cs" />
+    <Compile Include="ContactControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ContactControl.Designer.cs">
+      <DependentUpon>ContactControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="DMForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -271,6 +277,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="User.cs" />
+    <EmbeddedResource Include="ContactControl.resx">
+      <DependentUpon>ContactControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DMForm.resx">
       <DependentUpon>DMForm.cs</DependentUpon>
     </EmbeddedResource>
