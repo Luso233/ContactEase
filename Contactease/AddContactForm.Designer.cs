@@ -11,15 +11,13 @@ namespace ContactEase
         private TextBox txtLastName;
         private TextBox txtPhone;
         private TextBox txtEmail;
-        private TextBox txtFotoPath;
         private Button BtnSave;
         private Button BtnCancel;
-        private CheckBox chkFavorite;
         private System.Windows.Forms.Label lblFirstName;
         private System.Windows.Forms.Label lblLastName;
         private System.Windows.Forms.Label lblPhone;
         private System.Windows.Forms.Label lblEmail;
-        private System.Windows.Forms.Label lblFotoPath;
+        private System.Windows.Forms.Label lblFoto;
 
 
         protected override void Dispose(bool disposing)
@@ -39,47 +37,63 @@ namespace ContactEase
             this.txtEmail = new System.Windows.Forms.TextBox();
             this.BtnSave = new System.Windows.Forms.Button();
             this.BtnCancel = new System.Windows.Forms.Button();
-            this.chkFavorite = new System.Windows.Forms.CheckBox();
             this.lblFirstName = new System.Windows.Forms.Label();
             this.lblLastName = new System.Windows.Forms.Label();
             this.lblPhone = new System.Windows.Forms.Label();
             this.lblEmail = new System.Windows.Forms.Label();
             this.chkIsFavorite = new System.Windows.Forms.CheckBox();
-            this.lblFotoPath = new System.Windows.Forms.Label();
-            this.txtFotoPath = new System.Windows.Forms.TextBox();
+            this.lblFoto = new System.Windows.Forms.Label();
+            this.pbProfilePicture = new System.Windows.Forms.PictureBox();
+            this.BtnUploadImage = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.pbProfilePicture)).BeginInit();
             this.SuspendLayout();
+            // 
+            // topPanel
+            // 
+            this.topPanel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.topPanel.Size = new System.Drawing.Size(561, 100);
+            // 
+            // bottomPanel
+            // 
+            this.bottomPanel.Location = new System.Drawing.Point(0, 472);
+            this.bottomPanel.Size = new System.Drawing.Size(561, 70);
             // 
             // txtFirstName
             // 
-            this.txtFirstName.Location = new System.Drawing.Point(100, 50);
+            this.txtFirstName.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.txtFirstName.Location = new System.Drawing.Point(189, 145);
             this.txtFirstName.Name = "txtFirstName";
-            this.txtFirstName.Size = new System.Drawing.Size(200, 20);
+            this.txtFirstName.Size = new System.Drawing.Size(200, 25);
             this.txtFirstName.TabIndex = 5;
             // 
             // txtLastName
             // 
-            this.txtLastName.Location = new System.Drawing.Point(100, 80);
+            this.txtLastName.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.txtLastName.Location = new System.Drawing.Point(189, 175);
             this.txtLastName.Name = "txtLastName";
-            this.txtLastName.Size = new System.Drawing.Size(200, 20);
+            this.txtLastName.Size = new System.Drawing.Size(200, 25);
             this.txtLastName.TabIndex = 6;
             // 
             // txtPhone
             // 
-            this.txtPhone.Location = new System.Drawing.Point(100, 110);
+            this.txtPhone.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.txtPhone.Location = new System.Drawing.Point(189, 205);
             this.txtPhone.Name = "txtPhone";
-            this.txtPhone.Size = new System.Drawing.Size(200, 20);
+            this.txtPhone.Size = new System.Drawing.Size(200, 25);
             this.txtPhone.TabIndex = 7;
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(100, 140);
+            this.txtEmail.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.txtEmail.Location = new System.Drawing.Point(189, 235);
             this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(200, 20);
+            this.txtEmail.Size = new System.Drawing.Size(200, 25);
             this.txtEmail.TabIndex = 8;
             // 
             // BtnSave
             // 
-            this.BtnSave.Location = new System.Drawing.Point(100, 209);
+            this.BtnSave.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.BtnSave.Location = new System.Drawing.Point(165, 335);
             this.BtnSave.Name = "BtnSave";
             this.BtnSave.Size = new System.Drawing.Size(80, 30);
             this.BtnSave.TabIndex = 9;
@@ -88,24 +102,17 @@ namespace ContactEase
             // 
             // BtnCancel
             // 
-            this.BtnCancel.Location = new System.Drawing.Point(220, 209);
+            this.BtnCancel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.BtnCancel.Location = new System.Drawing.Point(319, 335);
             this.BtnCancel.Name = "BtnCancel";
             this.BtnCancel.Size = new System.Drawing.Size(80, 30);
             this.BtnCancel.TabIndex = 10;
             this.BtnCancel.Text = "Cancel";
-            this.BtnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
-            // 
-            // chkFavorite
-            // 
-            this.chkFavorite.Location = new System.Drawing.Point(100, 245);
-            this.chkFavorite.Name = "chkFavorite";
-            this.chkFavorite.Size = new System.Drawing.Size(80, 24);
-            this.chkFavorite.TabIndex = 11;
-            this.chkFavorite.Text = "Favorite";
             // 
             // lblFirstName
             // 
-            this.lblFirstName.Location = new System.Drawing.Point(20, 50);
+            this.lblFirstName.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.lblFirstName.Location = new System.Drawing.Point(109, 145);
             this.lblFirstName.Name = "lblFirstName";
             this.lblFirstName.Size = new System.Drawing.Size(80, 23);
             this.lblFirstName.TabIndex = 1;
@@ -113,7 +120,8 @@ namespace ContactEase
             // 
             // lblLastName
             // 
-            this.lblLastName.Location = new System.Drawing.Point(20, 80);
+            this.lblLastName.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.lblLastName.Location = new System.Drawing.Point(109, 175);
             this.lblLastName.Name = "lblLastName";
             this.lblLastName.Size = new System.Drawing.Size(80, 23);
             this.lblLastName.TabIndex = 2;
@@ -121,7 +129,8 @@ namespace ContactEase
             // 
             // lblPhone
             // 
-            this.lblPhone.Location = new System.Drawing.Point(20, 110);
+            this.lblPhone.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.lblPhone.Location = new System.Drawing.Point(109, 205);
             this.lblPhone.Name = "lblPhone";
             this.lblPhone.Size = new System.Drawing.Size(80, 23);
             this.lblPhone.TabIndex = 3;
@@ -129,7 +138,8 @@ namespace ContactEase
             // 
             // lblEmail
             // 
-            this.lblEmail.Location = new System.Drawing.Point(20, 140);
+            this.lblEmail.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.lblEmail.Location = new System.Drawing.Point(109, 235);
             this.lblEmail.Name = "lblEmail";
             this.lblEmail.Size = new System.Drawing.Size(80, 23);
             this.lblEmail.TabIndex = 4;
@@ -137,32 +147,53 @@ namespace ContactEase
             // 
             // chkIsFavorite
             // 
-            this.chkIsFavorite.Location = new System.Drawing.Point(0, 0);
+            this.chkIsFavorite.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.chkIsFavorite.Location = new System.Drawing.Point(165, 390);
             this.chkIsFavorite.Name = "chkIsFavorite";
             this.chkIsFavorite.Size = new System.Drawing.Size(104, 24);
             this.chkIsFavorite.TabIndex = 0;
+            this.chkIsFavorite.Text = "Favorito";
             // 
-            // lblFotoPath
+            // lblFoto
             // 
-            this.lblFotoPath.AutoSize = true;
-            this.lblFotoPath.Location = new System.Drawing.Point(23, 167);
-            this.lblFotoPath.Name = "lblFotoPath";
-            this.lblFotoPath.Size = new System.Drawing.Size(50, 13);
-            this.lblFotoPath.TabIndex = 12;
-            this.lblFotoPath.Text = "FotoPath";
+            this.lblFoto.AutoSize = true;
+            this.lblFoto.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.lblFoto.Location = new System.Drawing.Point(112, 262);
+            this.lblFoto.Name = "lblFoto";
+            this.lblFoto.Size = new System.Drawing.Size(37, 19);
+            this.lblFoto.TabIndex = 12;
+            this.lblFoto.Text = "Foto";
             // 
-            // txtFotoPath
+            // pbProfilePicture
             // 
-            this.txtFotoPath.Location = new System.Drawing.Point(100, 167);
-            this.txtFotoPath.Name = "txtFotoPath";
-            this.txtFotoPath.Size = new System.Drawing.Size(200, 20);
-            this.txtFotoPath.TabIndex = 13;
+            this.pbProfilePicture.BackgroundImage = global::Contactease.Properties.Resources.Favoriteicon;
+            this.pbProfilePicture.Location = new System.Drawing.Point(588, -35);
+            this.pbProfilePicture.Name = "pbProfilePicture";
+            this.pbProfilePicture.Size = new System.Drawing.Size(896, 900);
+            this.pbProfilePicture.TabIndex = 16;
+            this.pbProfilePicture.TabStop = false;
+            // 
+            // BtnUploadImage
+            // 
+            this.BtnUploadImage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
+            this.BtnUploadImage.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.BtnUploadImage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BtnUploadImage.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.BtnUploadImage.Location = new System.Drawing.Point(226, 289);
+            this.BtnUploadImage.Margin = new System.Windows.Forms.Padding(4);
+            this.BtnUploadImage.Name = "BtnUploadImage";
+            this.BtnUploadImage.Size = new System.Drawing.Size(117, 39);
+            this.BtnUploadImage.TabIndex = 18;
+            this.BtnUploadImage.Text = "Subir Imagen";
+            this.BtnUploadImage.UseVisualStyleBackColor = false;
+            this.BtnUploadImage.Click += new System.EventHandler(this.BtnUploadImage_Click);
             // 
             // AddContactForm
             // 
-            this.ClientSize = new System.Drawing.Size(400, 300);
-            this.Controls.Add(this.txtFotoPath);
-            this.Controls.Add(this.lblFotoPath);
+            this.ClientSize = new System.Drawing.Size(561, 542);
+            this.Controls.Add(this.BtnUploadImage);
+            this.Controls.Add(this.lblFoto);
+            this.Controls.Add(this.pbProfilePicture);
             this.Controls.Add(this.chkIsFavorite);
             this.Controls.Add(this.lblFirstName);
             this.Controls.Add(this.lblLastName);
@@ -174,13 +205,31 @@ namespace ContactEase
             this.Controls.Add(this.txtEmail);
             this.Controls.Add(this.BtnSave);
             this.Controls.Add(this.BtnCancel);
-            this.Controls.Add(this.chkFavorite);
             this.Name = "AddContactForm";
             this.Text = "Add Contact";
-            this.Load += new System.EventHandler(this.AddContactForm_Load);
+            this.Controls.SetChildIndex(this.BtnCancel, 0);
+            this.Controls.SetChildIndex(this.BtnSave, 0);
+            this.Controls.SetChildIndex(this.txtEmail, 0);
+            this.Controls.SetChildIndex(this.txtPhone, 0);
+            this.Controls.SetChildIndex(this.txtLastName, 0);
+            this.Controls.SetChildIndex(this.txtFirstName, 0);
+            this.Controls.SetChildIndex(this.lblEmail, 0);
+            this.Controls.SetChildIndex(this.lblPhone, 0);
+            this.Controls.SetChildIndex(this.lblLastName, 0);
+            this.Controls.SetChildIndex(this.lblFirstName, 0);
+            this.Controls.SetChildIndex(this.chkIsFavorite, 0);
+            this.Controls.SetChildIndex(this.pbProfilePicture, 0);
+            this.Controls.SetChildIndex(this.lblFoto, 0);
+            this.Controls.SetChildIndex(this.BtnUploadImage, 0);
+            this.Controls.SetChildIndex(this.bottomPanel, 0);
+            this.Controls.SetChildIndex(this.topPanel, 0);
+            ((System.ComponentModel.ISupportInitialize)(this.pbProfilePicture)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
+
+        private Button BtnUploadImage;
+        private PictureBox pbProfilePicture;
     }
 }

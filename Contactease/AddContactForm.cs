@@ -1,19 +1,19 @@
 ﻿using System;
+using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 
 namespace ContactEase
 {
-    public partial class AddContactForm : Form
+    public partial class AddContactForm : StyledForm
     {
-        public string FirstName { get; private set; }
-        public string LastName { get; private set; }
-        public string Phone { get; private set; }
-        public string Email { get; private set; }
-        public string FotoPath { get; private set; }
-        public bool IsFavorite { get; private set; }
+        private readonly int _userID;
+        public Contact NewContact { get; private set; }
 
-        public AddContactForm()
+        public AddContactForm(int userID)
         {
+            _userID = userID;
             InitializeComponent();
             ApplyCustomDesign();
         }
@@ -41,27 +41,53 @@ namespace ContactEase
             }
         }
 
+        
         private void BtnSave_Click(object sender, EventArgs e)
         {
-            FirstName = txtFirstName.Text;
-            LastName = txtLastName.Text;
-            Phone = txtPhone.Text;
-            Email = txtEmail.Text;
-            IsFavorite = chkIsFavorite.Checked;
-            FotoPath = txtFotoPath.Text;
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            if (string.IsNullOrWhiteSpace(txtFirstName.Text) || string.IsNullOrWhiteSpace(txtLastName.Text))
+            {
+                MessageBox.Show("Please fill in all required fields.");
+                return;
+            }
+
+            byte[] foto = null;
+            if (pbProfilePicture.Image != null)
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    pbProfilePicture.Image.Save(ms, pbProfilePicture.Image.RawFormat);
+                    foto = ms.ToArray();
+                }
+            }
+
+            NewContact = new Contact
+            {
+                UserID = _userID,
+                FirstName = txtFirstName.Text,
+                LastName = txtLastName.Text,
+                Phone = txtPhone.Text,
+                Email = txtEmail.Text,
+                Foto = foto,
+                IsFavorite = chkIsFavorite.Checked
+            };
+
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
-        private void BtnCancel_Click(object sender, EventArgs e)
+        private void BtnUploadImage_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
-        }
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image Files|*.jpg;*.jpeg;*.png;",
+                Title = "Select a Profile Picture"
+            };
 
-        private void AddContactForm_Load(object sender, EventArgs e)
-        {
-
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = openFileDialog.FileName;
+                pbProfilePicture.Image = Image.FromFile(filePath);
+            }
         }
     }
 }

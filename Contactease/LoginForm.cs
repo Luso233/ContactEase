@@ -18,60 +18,40 @@ namespace ContactEase
             string username = txtUsername.Text;
             string password = txtPassword.Text;
 
-            // Verificar en la base de datos
             using (var connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
                 var command = new MySqlCommand("SELECT Password, UserID FROM Users WHERE Username = @Username", connection);
                 command.Parameters.AddWithValue("@Username", username);
-                var reader = command.ExecuteReader();
 
-                if (reader.Read())
+                using (var reader = command.ExecuteReader())
                 {
-                    string storedHash = reader.GetString("Password");
-                    int userId = reader.GetInt32("UserID");
-
-                    try
+                    if (reader.Read())
                     {
-                        if (VerifyPassword(password, storedHash))
+                        string storedPassword = reader.GetString("Password");
+                        int userID = reader.GetInt32("UserID");
+
+                        // Compare passwords directly
+                        if (password == storedPassword)
                         {
-                            // Guardar el ID del usuario en una variable global si es necesario
-                            // Mostrar el formulario principal
-                            Form1 mainForm = new Form1(userId);
-                            mainForm.Show();
+                            // Login successful
+                            Form1 form1 = new Form1(userID);
+                            form1.Show();
                             this.Hide();
                         }
                         else
                         {
-                            MessageBox.Show("Nombre de usuario o contraseña incorrectos.");
+                            MessageBox.Show("Usuario o contraseña incorrectos.");
                         }
                     }
-                    catch (ArgumentOutOfRangeException ex)
+                    else
                     {
-                        MessageBox.Show("Error al verificar la contraseña: " + ex.Message);
-                        // Opcionalmente, registra el error para su posterior análisis
+                        MessageBox.Show("Usuario o contraseña incorrectos.");
                     }
-                }
-                else
-                {
-                    MessageBox.Show("Nombre de usuario no encontrado.");
                 }
             }
         }
 
-        private bool VerifyPassword(string password, string storedHash)
-        {
-            try
-            {
-                return BCrypt.Net.BCrypt.Verify(password, storedHash);
-            }
-            catch (Exception ex)
-            {
-                // Manejo adicional de excepciones si es necesario
-                MessageBox.Show("Error al verificar la contraseña: " + ex.Message);
-                return false;
-            }
-        }
 
     }
 }

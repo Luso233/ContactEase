@@ -1,11 +1,4 @@
-FirstName,LastName,Phone,Email,IsFavorite,FotoPath
-Juan,Pérez,+52 987 654 3210,juan.perez@example.com,True
-María,Gómez,+52 987 654 3211,maria.gomez@example.com,False
-Carlos,López,+52 987 654 3212,carlos.lopez@example.com,True
-Ana,Rodríguez,+52 987 654 3213,ana.rodriguez@example.com,False
-Luis,Martínez,+52 987 654 3214,luis.martinez@example.com,True
-Sofía,Sánchez,+52 987 654 3215,sofia.sanchez@example.com,False
-Ricardo,Morales,+52 987 654 3216,ricardo.morales@example.com,True
-Paola,Fernández,+52 987 654 3217,paola.fernandez@example.com,False
-Jorge,Ramírez,+52 987 654 3218,jorge.ramirez@example.com,True
-Gabriela,Vargas,+52 987 654 3219,gabriela.vargas@example.com,False
+ContactID,UserID,ContactUserID,FirstName,LastName,Phone,Email,Foto,IsFavorite
+1,1,2,John,Doe,1234567890,john.doe@example.com,,1
+2,1,3,Jane,Smith,0987654321,jane.smith@example.com,,0
+3,2,1,Bob,Brown,1122334455,bob.brown@example.com,,1

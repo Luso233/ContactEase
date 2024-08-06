@@ -23,7 +23,9 @@ namespace Contactease
             this.BtnLogin = new System.Windows.Forms.Button();
             this.BtnRegister = new System.Windows.Forms.Button();
             this.pictureBoxLogo = new System.Windows.Forms.PictureBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTitle
@@ -31,7 +33,7 @@ namespace Contactease
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Arial", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.lblTitle.Location = new System.Drawing.Point(610, 133);
+            this.lblTitle.Location = new System.Drawing.Point(194, 90);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(211, 37);
             this.lblTitle.TabIndex = 0;
@@ -39,35 +41,56 @@ namespace Contactease
             // 
             // BtnLogin
             // 
-            this.BtnLogin.Location = new System.Drawing.Point(478, 396);
+            this.BtnLogin.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
+            this.BtnLogin.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.BtnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BtnLogin.ForeColor = System.Drawing.Color.White;
+            this.BtnLogin.Location = new System.Drawing.Point(61, 605);
+            this.BtnLogin.Margin = new System.Windows.Forms.Padding(4);
             this.BtnLogin.Name = "BtnLogin";
-            this.BtnLogin.Size = new System.Drawing.Size(100, 23);
-            this.BtnLogin.TabIndex = 1;
-            this.BtnLogin.Text = "Login";
-            this.BtnLogin.UseVisualStyleBackColor = true;
+            this.BtnLogin.Size = new System.Drawing.Size(196, 73);
+            this.BtnLogin.TabIndex = 2;
+            this.BtnLogin.Text = "Iniciar Sesión";
+            this.BtnLogin.UseVisualStyleBackColor = false;
             this.BtnLogin.Click += new System.EventHandler(this.BtnLogin_Click);
             // 
             // BtnRegister
             // 
-            this.BtnRegister.Location = new System.Drawing.Point(830, 385);
+            this.BtnRegister.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
+            this.BtnRegister.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.BtnRegister.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BtnRegister.ForeColor = System.Drawing.Color.White;
+            this.BtnRegister.Location = new System.Drawing.Point(348, 605);
+            this.BtnRegister.Margin = new System.Windows.Forms.Padding(4);
             this.BtnRegister.Name = "BtnRegister";
-            this.BtnRegister.Size = new System.Drawing.Size(100, 23);
+            this.BtnRegister.Size = new System.Drawing.Size(196, 73);
             this.BtnRegister.TabIndex = 2;
-            this.BtnRegister.Text = "Register";
-            this.BtnRegister.UseVisualStyleBackColor = true;
+            this.BtnRegister.Text = "Registrarse";
+            this.BtnRegister.UseVisualStyleBackColor = false;
             this.BtnRegister.Click += new System.EventHandler(this.BtnRegister_Click);
             // 
             // pictureBoxLogo
             // 
-            this.pictureBoxLogo.Location = new System.Drawing.Point(659, 232);
+            this.pictureBoxLogo.BackgroundImage = global::Contactease.Properties.Resources.Favoriteicon;
+            this.pictureBoxLogo.Location = new System.Drawing.Point(228, 176);
             this.pictureBoxLogo.Name = "pictureBoxLogo";
-            this.pictureBoxLogo.Size = new System.Drawing.Size(100, 100);
+            this.pictureBoxLogo.Size = new System.Drawing.Size(177, 187);
             this.pictureBoxLogo.TabIndex = 3;
             this.pictureBoxLogo.TabStop = false;
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackgroundImage = global::Contactease.Properties.Resources.Favoriteicon;
+            this.pictureBox1.Location = new System.Drawing.Point(588, -35);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(896, 900);
+            this.pictureBox1.TabIndex = 5;
+            this.pictureBox1.TabStop = false;
+            // 
             // LandingForm
             // 
-            this.ClientSize = new System.Drawing.Size(1392, 679);
+            this.ClientSize = new System.Drawing.Size(1484, 861);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.pictureBoxLogo);
             this.Controls.Add(this.BtnRegister);
             this.Controls.Add(this.BtnLogin);
@@ -76,6 +99,7 @@ namespace Contactease
             this.Text = "Welcome";
             this.Load += new System.EventHandler(this.LandingForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -85,5 +109,6 @@ namespace Contactease
         private System.Windows.Forms.Button BtnLogin;
         private System.Windows.Forms.Button BtnRegister;
         private System.Windows.Forms.PictureBox pictureBoxLogo;
+        private PictureBox pictureBox1;
     }
 }

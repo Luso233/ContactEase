@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace ContactEase
@@ -22,9 +23,17 @@ namespace ContactEase
             string lastName = txtLastName.Text;
             string phone = txtPhone.Text;
             string email = txtEmail.Text;
-            string fotoPath = txtFotoPath.Text;
+            byte[] foto = null;
 
-            // Verificar si el nombre de usuario o el correo electrónico ya existen
+            if (pbProfilePicture.Image != null)
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    pbProfilePicture.Image.Save(ms, pbProfilePicture.Image.RawFormat);
+                    foto = ms.ToArray();
+                }
+            }
+
             using (var connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -40,15 +49,14 @@ namespace ContactEase
                     return;
                 }
 
-                // Insertar el nuevo usuario
-                var command = new MySqlCommand("INSERT INTO Users (Username, Password, FirstName, LastName, Phone, Email, FotoPath) VALUES (@Username, @Password, @FirstName, @LastName, @Phone, @Email, @FotoPath)", connection);
+                var command = new MySqlCommand("INSERT INTO Users (Username, Password, FirstName, LastName, Phone, Email, Foto) VALUES (@Username, @Password, @FirstName, @LastName, @Phone, @Email, @Foto)", connection);
                 command.Parameters.AddWithValue("@Username", username);
                 command.Parameters.AddWithValue("@Password", BCrypt.Net.BCrypt.HashPassword(password));
                 command.Parameters.AddWithValue("@FirstName", firstName);
                 command.Parameters.AddWithValue("@LastName", lastName);
                 command.Parameters.AddWithValue("@Phone", phone);
                 command.Parameters.AddWithValue("@Email", email);
-                command.Parameters.AddWithValue("@FotoPath", fotoPath);
+                command.Parameters.AddWithValue("@Foto", foto);
                 command.ExecuteNonQuery();
 
                 MessageBox.Show("Usuario registrado exitosamente.");
@@ -58,11 +66,19 @@ namespace ContactEase
             }
         }
 
-        private void RegisterForm_Load(object sender, EventArgs e)
+        private void BtnUploadImage_Click(object sender, EventArgs e)
         {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image Files|*.jpg;*.jpeg;*.png;",
+                Title = "Select a Profile Picture"
+            };
 
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = openFileDialog.FileName;
+                pbProfilePicture.Image = Image.FromFile(filePath);
+            }
         }
-
-       
     }
 }

@@ -16,7 +16,6 @@ namespace ContactEase
 
         private void InitializeStyle()
         {
-            this.WindowState = FormWindowState.Maximized;
             this.BackColor = Color.FromArgb(15, 15, 15);
             this.Font = new Font("Segoe UI", 10, FontStyle.Regular);
 
@@ -37,7 +36,7 @@ namespace ContactEase
                 Location = new Point(10, 25)
             };
 
-            
+            topPanel.Controls.Add(logoPictureBox);
 
             // Panel inferior
             bottomPanel = new Panel
@@ -48,32 +47,15 @@ namespace ContactEase
                 Padding = new Padding(10)
             };
 
-      
+            this.Controls.Add(topPanel);
+            this.Controls.Add(bottomPanel);
         }
 
-        private void AddButton(string text, Point location, EventHandler clickEventHandler)
-        {
-            Button button = new Button
-            {
-                Text = text,
-                ForeColor = Color.White,
-                BackColor = Color.FromArgb(45, 45, 45),
-                FlatStyle = FlatStyle.Flat,
-                Location = location
-            };
-            button.FlatAppearance.BorderColor = Color.FromArgb(192, 0, 0);
-            button.Click += clickEventHandler;
-            EstilizarBoton(button);
+        
 
-           
-        }
-
-        private void EstilizarBoton(Button button)
+        private void StyledForm_Load(object sender, EventArgs e)
         {
-            button.FlatAppearance.BorderColor = Color.FromArgb(192, 0, 0);
-            button.FlatStyle = FlatStyle.Flat;
-            button.Font = new Font("Segoe UI", 10, FontStyle.Regular);
-            button.Padding = new Padding(5);
+
         }
     }
 }

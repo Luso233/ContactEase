@@ -61,7 +61,7 @@ namespace Contactease.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FirstName,LastName,Phone,Email,IsFavorite,FotoPath
+        ///   Looks up a localized string similar to FirstName,LastName,Phone,Email,IsFavorite,Foto
         ///John,Doe,555-1234,johndoe@example.com,true,C:\Users\luisf\source\repos\Contactease\Contactease\Carpeta\Favoriteicon.jpg
         ///.
         /// </summary>

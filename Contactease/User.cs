@@ -15,6 +15,6 @@ namespace ContactEase
         public string LastName { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
-        public string FotoPath { get; internal set; }
+        public byte[] Foto { get; set; }
     }
 }
