@@ -14,12 +14,14 @@ namespace ContactEase
     public partial class Form1 : Form
     {
         private readonly int UserID;
+        private readonly int ContactUserID;
         private readonly List<Contact> contactos;
         private readonly string connectionString = "Server=127.0.0.1; Port=3306; User ID=id22398096_luso; Password=Socima66; Database=contactease;";
 
-        public Form1(int userID)
+        public Form1(int userID, int contactUserID)
         {
             UserID = userID;
+            ContactUserID = contactUserID;
             contactos = new List<Contact>();
 
             InitializeComponent();
@@ -177,7 +179,7 @@ namespace ContactEase
 
         private void OpenAddContactForm()
         {
-            var addContactForm = new AddContactForm(UserID);
+            var addContactForm = new AddContactForm(UserID, ContactUserID);
             if (addContactForm.ShowDialog() == DialogResult.OK)
             {
                 var newContact = addContactForm.NewContact;
@@ -201,11 +203,12 @@ namespace ContactEase
                 contact.Email = editContactForm.Email;
                 contact.IsFavorite = editContactForm.IsFavorite;
                 contact.Foto = editContactForm.Foto;
-                UpdateContactInDatabase(editContactForm.contact);
+                UpdateContactInDatabase(contact); // Usar el objeto contact aquí directamente
                 LoadContacts();
                 DisplayContacts(contactos);
             }
         }
+
 
         private void ExportContacts()
         {
@@ -244,31 +247,29 @@ namespace ContactEase
             }
         }
 
-        private bool IsUserExists(int userId)
-        {
-            using (var connection = new MySqlConnection(connectionString))
-            {
-                connection.Open();
-                string query = "SELECT COUNT(*) FROM users WHERE UserID = @UserID";
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@UserID", userId);
-                    return Convert.ToInt32(command.ExecuteScalar()) > 0;
-                }
-            }
-        }
+        
 
         private void AddContactToDatabase(Contact contact)
         {
-            if (!IsUserExists(contact.ContactUserID))
-            {
-                MessageBox.Show("El usuario de contacto no existe.");
-                return;
-            }
-
             using (var connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
+
+                // Verificar si ContactUserID es válido
+                string checkQuery = "SELECT COUNT(*) FROM users WHERE UserID = @ContactUserID";
+                using (var checkCommand = new MySqlCommand(checkQuery, connection))
+                {
+                    checkCommand.Parameters.AddWithValue("@ContactUserID", contact.ContactUserID);
+                    int count = Convert.ToInt32(checkCommand.ExecuteScalar());
+
+                    if (count == 0)
+                    {
+                        MessageBox.Show("El usuario de contacto no existe.");
+                        return;
+                    }
+                }
+
+                // Insertar contacto en la base de datos
                 string query = "INSERT INTO contacts (UserID, ContactUserID, FirstName, LastName, Phone, Email, Foto, IsFavorite) VALUES (@UserID, @ContactUserID, @FirstName, @LastName, @Phone, @Email, @Foto, @IsFavorite)";
                 using (var command = new MySqlCommand(query, connection))
                 {
@@ -284,6 +285,7 @@ namespace ContactEase
                 }
             }
         }
+
 
         private void UpdateContactInDatabase(Contact contact)
         {

@@ -126,7 +126,7 @@ namespace ContactEase
             this.BtnUploadImage.TabIndex = 18;
             this.BtnUploadImage.Text = "Subir Imagen";
             this.BtnUploadImage.UseVisualStyleBackColor = false;
-            this.BtnUploadImage.Click += new System.EventHandler(this.BtnUploadImage_Click_1);
+            this.BtnUploadImage.Click += new System.EventHandler(this.BtnUploadImage_Click);
             // 
             // EditContactForm
             // 

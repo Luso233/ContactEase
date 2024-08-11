@@ -30,12 +30,13 @@ namespace ContactEase
                     {
                         string storedPassword = reader.GetString("Password");
                         int userID = reader.GetInt32("UserID");
+                        int contactUserID = reader.GetInt32("ContactUserID");
 
                         // Compare passwords directly
                         if (password == storedPassword)
                         {
                             // Login successful
-                            Form1 form1 = new Form1(userID);
+                            Form1 form1 = new Form1(userID,contactUserID);
                             form1.Show();
                             this.Hide();
                         }

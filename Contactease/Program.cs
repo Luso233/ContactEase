@@ -13,7 +13,7 @@ namespace ContactEase
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1(1)); 
+            Application.Run(new Form1(1,1)); 
         }
     }
 }

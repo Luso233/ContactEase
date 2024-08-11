@@ -27,17 +27,17 @@ namespace ContactEase
             using (var connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-                string query = "SELECT * FROM messages WHERE (SenderID = @SenderID AND ReceiverID = @ReceiverID) OR (SenderID = @ReceiverID AND ReceiverID = @SenderID) ORDER BY Timestamp";
+                string query = "SELECT * FROM messages WHERE (SenderUserID = @SenderUserID AND ReceiverUserID = @ReceiverUserID) OR (SenderUserID = @ReceiverUserID AND ReceiverUserID = @SenderUserID) ORDER BY Timestamp";
                 using (var command = new MySqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@SenderID", senderID);
-                    command.Parameters.AddWithValue("@ReceiverID", receiverID);
+                    command.Parameters.AddWithValue("@SenderUserID", senderID);
+                    command.Parameters.AddWithValue("@ReceiverUserID", receiverID);
                     using (var reader = command.ExecuteReader())
                     {
-                        int lastSenderID = -1;
+                        int lastSenderUserID = -1;
                         while (reader.Read())
                         {
-                            int currentSenderID = reader.GetInt32("SenderID");
+                            int currentSenderUserID = reader.GetInt32("SenderUserID");
                             Panel messagePanelItem = new Panel
                             {
                                 Size = new Size(500, 50),
@@ -51,7 +51,7 @@ namespace ContactEase
                             {
                                 Size = new Size(40, 40),
                                 Location = new Point(5, 5),
-                                Image = GetProfilePicture(currentSenderID),
+                                Image = GetProfilePicture(currentSenderUserID),
                                 SizeMode = PictureBoxSizeMode.StretchImage
                             };
                             messagePanelItem.Controls.Add(profilePic);
@@ -72,7 +72,7 @@ namespace ContactEase
                                 Text = reader.GetString("MessageText"),
                                 AutoSize = true,
                                 Location = new Point(50, 25),
-                                ForeColor = currentSenderID == senderID ? Color.Blue : Color.Green
+                                ForeColor = currentSenderUserID == senderID ? Color.Blue : Color.Green
                             };
                             messagePanelItem.Controls.Add(messageLabel);
 
@@ -82,7 +82,7 @@ namespace ContactEase
                             // Add message panel to messagePanel
                             messagePanel.Controls.Add(messagePanelItem);
 
-                            lastSenderID = currentSenderID;
+                            lastSenderUserID = currentSenderUserID;
                         }
                     }
                 }
@@ -94,10 +94,10 @@ namespace ContactEase
             using (var connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-                string query = "SELECT * FROM users WHERE UserID = @ReceiverID";
+                string query = "SELECT * FROM users WHERE UserID = @ReceiverUserID";
                 using (var command = new MySqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@ReceiverID", receiverID);
+                    command.Parameters.AddWithValue("@ReceiverUserID", receiverID);
                     using (var reader = command.ExecuteReader())
                     {
                         if (reader.Read())
@@ -138,11 +138,11 @@ namespace ContactEase
             using (var connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
-                string query = "INSERT INTO messages (SenderID, ReceiverID, MessageText, Timestamp) VALUES (@SenderID, @ReceiverID, @MessageText, @Timestamp)";
+                string query = "INSERT INTO messages (SenderUserID, ReceiverUserID, MessageText, Timestamp) VALUES (@SenderUserID, @ReceiverUserID, @MessageText, @Timestamp)";
                 using (var command = new MySqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@SenderID", senderID);
-                    command.Parameters.AddWithValue("@ReceiverID", receiverID);
+                    command.Parameters.AddWithValue("@SenderUserID", senderID);
+                    command.Parameters.AddWithValue("@ReceiverUserID", receiverID);
                     command.Parameters.AddWithValue("@MessageText", messageText);
                     command.Parameters.AddWithValue("@Timestamp", DateTime.Now);
                     command.ExecuteNonQuery();

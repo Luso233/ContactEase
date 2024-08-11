@@ -9,11 +9,13 @@ namespace ContactEase
     public partial class AddContactForm : StyledForm
     {
         private readonly int _userID;
+        private readonly int  _ContactUserID;
         public Contact NewContact { get; private set; }
 
-        public AddContactForm(int userID)
+        public AddContactForm(int userID, int ContactUserID)
         {
             _userID = userID;
+            _ContactUserID = ContactUserID;
             InitializeComponent();
             ApplyCustomDesign();
         }
@@ -41,7 +43,6 @@ namespace ContactEase
             }
         }
 
-        
         private void BtnSave_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtFirstName.Text) || string.IsNullOrWhiteSpace(txtLastName.Text))
@@ -63,6 +64,7 @@ namespace ContactEase
             NewContact = new Contact
             {
                 UserID = _userID,
+                ContactUserID = _ContactUserID,
                 FirstName = txtFirstName.Text,
                 LastName = txtLastName.Text,
                 Phone = txtPhone.Text,
