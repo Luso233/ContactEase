@@ -133,19 +133,6 @@ namespace ContactEase
                 Font = new Font("Arial", 12)
             };
 
-            LinkLabel messageLinkLabel = new LinkLabel
-            {
-                Text = "Enviar Mensaje",
-                ForeColor = Color.Blue,
-                AutoSize = true,
-                Location = new Point(300, 70)
-            };
-
-            messageLinkLabel.Click += (s, e) =>
-            {
-                var dmForm = new DMForm(UserID, contact.ContactUserID);
-                dmForm.Show();
-            };
 
             contactPanel.Click += (s, e) =>
             {
@@ -156,7 +143,7 @@ namespace ContactEase
             contactPanel.Controls.Add(nombreLabel);
             contactPanel.Controls.Add(telefonoLabel);
             contactPanel.Controls.Add(emailLabel);
-            contactPanel.Controls.Add(messageLinkLabel);
+            
 
             return contactPanel;
         }
@@ -247,7 +234,17 @@ namespace ContactEase
             }
         }
 
-        
+        private void OpenDMForm(int ReceiverID)
+        {
+            DMForm dmForm = new DMForm(UserID, ReceiverID);
+            dmForm.StartPosition = FormStartPosition.Manual;
+            dmForm.Location = new Point(0, Screen.PrimaryScreen.WorkingArea.Height - dmForm.Height);
+            dmForm.Show();
+
+        }
+
+
+
 
         private void AddContactToDatabase(Contact contact)
         {
@@ -312,6 +309,12 @@ namespace ContactEase
             var landingForm = new LandingForm();
             landingForm.Show();
             this.Close();
+        }
+
+        private void lblMensajes_Click(object sender, EventArgs e)
+        {
+            int ReceiverID = ContactUserID; // Puedes seleccionar un contacto específico aquí
+            OpenDMForm(ReceiverID);
         }
     }
 }

@@ -188,6 +188,7 @@ namespace ContactEase
             this.lblMensajes.Size = new System.Drawing.Size(66, 19);
             this.lblMensajes.TabIndex = 1;
             this.lblMensajes.Text = "Mensajes";
+            this.lblMensajes.Click += new System.EventHandler(this.lblMensajes_Click);
             // 
             // profilePictureBox
             // 

@@ -9,7 +9,7 @@ namespace ContactEase
         private Panel panelSuperior;
         private ListView listViewMensajes;
         private TextBox txtMensaje;
-        private Button btnEnviar;
+        private Button BtnEnviar;
         private System.Windows.Forms.Panel messagePanel;
 
         protected override void Dispose(bool disposing)
@@ -24,21 +24,37 @@ namespace ContactEase
         private void InitializeComponent()
         {
             this.panelSuperior = new System.Windows.Forms.Panel();
+            this.comboBoxContacts = new System.Windows.Forms.ComboBox();
             this.listViewMensajes = new System.Windows.Forms.ListView();
             this.txtMensaje = new System.Windows.Forms.TextBox();
-            this.btnEnviar = new System.Windows.Forms.Button();
+            this.BtnEnviar = new System.Windows.Forms.Button();
             this.messagePanel = new System.Windows.Forms.Panel();
+            this.panelSuperior.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelSuperior
             // 
             this.panelSuperior.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+            this.panelSuperior.Controls.Add(this.comboBoxContacts);
             this.panelSuperior.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelSuperior.Location = new System.Drawing.Point(0, 0);
             this.panelSuperior.Margin = new System.Windows.Forms.Padding(2);
             this.panelSuperior.Name = "panelSuperior";
             this.panelSuperior.Size = new System.Drawing.Size(665, 75);
             this.panelSuperior.TabIndex = 0;
+            // 
+            // comboBoxContacts
+            // 
+            this.comboBoxContacts.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
+            this.comboBoxContacts.ForeColor = System.Drawing.Color.White;
+            this.comboBoxContacts.Items.AddRange(new object[] {
+            "Alfabético",
+            "Favoritos"});
+            this.comboBoxContacts.Location = new System.Drawing.Point(103, 25);
+            this.comboBoxContacts.Name = "comboBoxContacts";
+            this.comboBoxContacts.Size = new System.Drawing.Size(296, 21);
+            this.comboBoxContacts.TabIndex = 3;
+            this.comboBoxContacts.SelectedIndexChanged += new System.EventHandler(this.comboBoxContacts_SelectedIndexChanged);
             // 
             // listViewMensajes
             // 
@@ -65,20 +81,20 @@ namespace ContactEase
             this.txtMensaje.Size = new System.Drawing.Size(401, 20);
             this.txtMensaje.TabIndex = 7;
             // 
-            // btnEnviar
+            // BtnEnviar
             // 
-            this.btnEnviar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-            this.btnEnviar.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(76)))), ((int)(((byte)(76)))));
-            this.btnEnviar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnEnviar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.btnEnviar.Location = new System.Drawing.Point(501, 436);
-            this.btnEnviar.Margin = new System.Windows.Forms.Padding(2);
-            this.btnEnviar.Name = "btnEnviar";
-            this.btnEnviar.Size = new System.Drawing.Size(75, 35);
-            this.btnEnviar.TabIndex = 8;
-            this.btnEnviar.Text = "Enviar";
-            this.btnEnviar.UseVisualStyleBackColor = true;
-            this.btnEnviar.Click += new System.EventHandler(this.btnEnviar_Click);
+            this.BtnEnviar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+            this.BtnEnviar.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(76)))), ((int)(((byte)(76)))));
+            this.BtnEnviar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BtnEnviar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.BtnEnviar.Location = new System.Drawing.Point(501, 436);
+            this.BtnEnviar.Margin = new System.Windows.Forms.Padding(2);
+            this.BtnEnviar.Name = "BtnEnviar";
+            this.BtnEnviar.Size = new System.Drawing.Size(75, 35);
+            this.BtnEnviar.TabIndex = 8;
+            this.BtnEnviar.Text = "Enviar";
+            this.BtnEnviar.UseVisualStyleBackColor = true;
+            this.BtnEnviar.Click += new System.EventHandler(this.BtnEnviar_Click);
             // 
             // messagePanel
             // 
@@ -97,16 +113,19 @@ namespace ContactEase
             this.ClientSize = new System.Drawing.Size(665, 537);
             this.Controls.Add(this.messagePanel);
             this.Controls.Add(this.txtMensaje);
-            this.Controls.Add(this.btnEnviar);
+            this.Controls.Add(this.BtnEnviar);
             this.Controls.Add(this.listViewMensajes);
             this.Controls.Add(this.panelSuperior);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "DMForm";
             this.Text = "Mensajería";
+            this.panelSuperior.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
+
+        private ComboBox comboBoxContacts;
     }
 }
 
