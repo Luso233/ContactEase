@@ -191,7 +191,7 @@ namespace ContactEase
             // 
             // pictureBox1
             // 
-            this.pictureBox1.BackgroundImage = global::Contactease.Properties.Resources.Favoriteicon;
+            this.pictureBox1.BackgroundImage = global::Contactease.Properties.Resources.Logo;
             this.pictureBox1.Location = new System.Drawing.Point(588, -35);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(896, 900);
@@ -200,7 +200,7 @@ namespace ContactEase
             //
             // pbProfilePicture
             //
-            this.pbProfilePicture.BackgroundImage = global::Contactease.Properties.Resources.Favoriteicon;
+            this.pbProfilePicture.BackgroundImage = global::Contactease.Properties.Resources.Logo;
             this.pbProfilePicture.Location = new System.Drawing.Point(588, -35);
             this.pbProfilePicture.Name = "pbProfilePicture";
             this.pbProfilePicture.Size = new System.Drawing.Size(896, 900);

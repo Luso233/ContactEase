@@ -103,7 +103,7 @@ namespace ContactEase
                 Size = new Size(80, 80),
                 Location = new Point(10, 10),
                 SizeMode = PictureBoxSizeMode.Zoom,
-                Image = contact.Foto != null ? Image.FromStream(new MemoryStream(contact.Foto)) : Image.FromFile(@"C:\Users\luisf\source\repos\Contactease\Contactease\Carpeta\Favoriteicon.jpg")
+                Image = contact.Foto != null ? Image.FromStream(new MemoryStream(contact.Foto)) : Image.FromFile(@"C:\Users\luisf\source\repos\Contactease\Contactease\Carpeta\Logo.jpg")
             };
 
             Label nombreLabel = new Label

@@ -19,21 +19,33 @@ namespace Contactease
 
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LandingForm));
             this.lblTitle = new System.Windows.Forms.Label();
             this.BtnLogin = new System.Windows.Forms.Button();
             this.BtnRegister = new System.Windows.Forms.Button();
-            this.pictureBoxLogo = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
+            this.pictureBoxLogo = new System.Windows.Forms.PictureBox();
+            this.topPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
             this.SuspendLayout();
+            // 
+            // topPanel
+            // 
+            this.topPanel.Controls.Add(this.lblTitle);
+            this.topPanel.Size = new System.Drawing.Size(1484, 100);
+            // 
+            // bottomPanel
+            // 
+            this.bottomPanel.Location = new System.Drawing.Point(0, 791);
+            this.bottomPanel.Size = new System.Drawing.Size(1484, 70);
             // 
             // lblTitle
             // 
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Arial", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.lblTitle.Location = new System.Drawing.Point(194, 90);
+            this.lblTitle.Location = new System.Drawing.Point(693, 26);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(211, 37);
             this.lblTitle.TabIndex = 0;
@@ -69,23 +81,23 @@ namespace Contactease
             this.BtnRegister.UseVisualStyleBackColor = false;
             this.BtnRegister.Click += new System.EventHandler(this.BtnRegister_Click);
             // 
-            // pictureBoxLogo
-            // 
-            this.pictureBoxLogo.BackgroundImage = global::Contactease.Properties.Resources.Favoriteicon;
-            this.pictureBoxLogo.Location = new System.Drawing.Point(228, 176);
-            this.pictureBoxLogo.Name = "pictureBoxLogo";
-            this.pictureBoxLogo.Size = new System.Drawing.Size(177, 187);
-            this.pictureBoxLogo.TabIndex = 3;
-            this.pictureBoxLogo.TabStop = false;
-            // 
             // pictureBox1
             // 
-            this.pictureBox1.BackgroundImage = global::Contactease.Properties.Resources.Favoriteicon;
+            this.pictureBox1.BackgroundImage = global::Contactease.Properties.Resources.Landing;
             this.pictureBox1.Location = new System.Drawing.Point(588, -35);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(896, 900);
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
+            // 
+            // pictureBoxLogo
+            // 
+            this.pictureBoxLogo.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBoxLogo.BackgroundImage")));
+            this.pictureBoxLogo.Location = new System.Drawing.Point(-310, 66);
+            this.pictureBoxLogo.Name = "pictureBoxLogo";
+            this.pictureBoxLogo.Size = new System.Drawing.Size(1441, 526);
+            this.pictureBoxLogo.TabIndex = 3;
+            this.pictureBoxLogo.TabStop = false;
             // 
             // LandingForm
             // 
@@ -94,21 +106,27 @@ namespace Contactease
             this.Controls.Add(this.pictureBoxLogo);
             this.Controls.Add(this.BtnRegister);
             this.Controls.Add(this.BtnLogin);
-            this.Controls.Add(this.lblTitle);
             this.Name = "LandingForm";
             this.Text = "Welcome";
             this.Load += new System.EventHandler(this.LandingForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).EndInit();
+            this.Controls.SetChildIndex(this.BtnLogin, 0);
+            this.Controls.SetChildIndex(this.BtnRegister, 0);
+            this.Controls.SetChildIndex(this.pictureBoxLogo, 0);
+            this.Controls.SetChildIndex(this.pictureBox1, 0);
+            this.Controls.SetChildIndex(this.bottomPanel, 0);
+            this.Controls.SetChildIndex(this.topPanel, 0);
+            this.topPanel.ResumeLayout(false);
+            this.topPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Button BtnLogin;
         private System.Windows.Forms.Button BtnRegister;
-        private System.Windows.Forms.PictureBox pictureBoxLogo;
         private PictureBox pictureBox1;
+        private PictureBox pictureBoxLogo;
     }
 }

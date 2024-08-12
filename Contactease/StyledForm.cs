@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace ContactEase
 {
@@ -30,7 +32,7 @@ namespace ContactEase
 
             PictureBox logoPictureBox = new PictureBox
             {
-                Image = Image.FromFile(@"C:\Users\luisf\source\repos\Contactease\Contactease\Carpeta\Favoriteicon.jpg"),
+                Image = Image.FromFile(@"C:\Users\luisf\source\repos\Contactease\Contactease\Carpeta\Logo.jpg"),
                 SizeMode = PictureBoxSizeMode.Zoom,
                 Size = new Size(50, 50),
                 Location = new Point(10, 25)

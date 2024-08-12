@@ -61,8 +61,10 @@ namespace Contactease.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FirstName,LastName,Phone,Email,IsFavorite,Foto
-        ///John,Doe,555-1234,johndoe@example.com,true,C:\Users\luisf\source\repos\Contactease\Contactease\Carpeta\Favoriteicon.jpg
+        ///   Looks up a localized string similar to ContactID,UserID,ContactUserID,FirstName,LastName,Phone,Email,Foto,IsFavorite
+        ///1,1,2,John,Doe,1234567890,john.doe@example.com,,1
+        ///2,1,3,Jane,Smith,0987654321,jane.smith@example.com,,0
+        ///3,2,1,Bob,Brown,1122334455,bob.brown@example.com,,1
         ///.
         /// </summary>
         internal static string contactos {
@@ -77,6 +79,26 @@ namespace Contactease.Properties {
         internal static System.Drawing.Bitmap Favoriteicon {
             get {
                 object obj = ResourceManager.GetObject("Favoriteicon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Landing {
+            get {
+                object obj = ResourceManager.GetObject("Landing", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Logo {
+            get {
+                object obj = ResourceManager.GetObject("Logo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

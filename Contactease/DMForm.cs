@@ -254,7 +254,7 @@ namespace ContactEase
             else
             {
                 // Si no hay foto en la base de datos, puedes retornar una imagen predeterminada
-                return Image.FromFile(@"C:\Users\luisf\source\repos\Contactease\Contactease\Carpeta\Favoriteicon.jpg"); // Asegúrate de tener una imagen predeterminada en tu proyecto
+                return Image.FromFile(@"C:\Users\luisf\source\repos\Contactease\Contactease\Carpeta\Logo.jpg"); // Asegúrate de tener una imagen predeterminada en tu proyecto
             }
         }
     }

@@ -315,9 +315,15 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Carpeta\Logo.jpg" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="Carpeta\Favoriteicon.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Carpeta\Landing.jpg" />
+    <None Include="Resources\Logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

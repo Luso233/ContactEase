@@ -60,10 +60,10 @@ namespace ContactEase
             // 
             // logoPictureBox
             // 
-            this.logoPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("logoPictureBox.Image")));
+            this.logoPictureBox.Image = global::Contactease.Properties.Resources.Logo;
             this.logoPictureBox.Location = new System.Drawing.Point(14, 12);
             this.logoPictureBox.Name = "logoPictureBox";
-            this.logoPictureBox.Size = new System.Drawing.Size(91, 69);
+            this.logoPictureBox.Size = new System.Drawing.Size(66, 69);
             this.logoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.logoPictureBox.TabIndex = 0;
             this.logoPictureBox.TabStop = false;

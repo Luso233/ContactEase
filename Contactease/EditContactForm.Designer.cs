@@ -106,7 +106,7 @@ namespace ContactEase
             // 
             // pbProfilePicture
             // 
-            this.pbProfilePicture.BackgroundImage = global::Contactease.Properties.Resources.Favoriteicon;
+            this.pbProfilePicture.BackgroundImage = global::Contactease.Properties.Resources.Logo;
             this.pbProfilePicture.Location = new System.Drawing.Point(588, -35);
             this.pbProfilePicture.Name = "pbProfilePicture";
             this.pbProfilePicture.Size = new System.Drawing.Size(896, 900);

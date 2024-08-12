@@ -23,6 +23,7 @@ namespace ContactEase
 
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.btnLogin = new System.Windows.Forms.Button();
@@ -33,6 +34,15 @@ namespace ContactEase
             this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
+            // 
+            // topPanel
+            // 
+            this.topPanel.Size = new System.Drawing.Size(1484, 100);
+            // 
+            // bottomPanel
+            // 
+            this.bottomPanel.Location = new System.Drawing.Point(0, 791);
+            this.bottomPanel.Size = new System.Drawing.Size(1484, 70);
             // 
             // txtUsername
             // 
@@ -83,12 +93,14 @@ namespace ContactEase
             // 
             // pictureBox1
             // 
-            this.pictureBox1.BackgroundImage = global::Contactease.Properties.Resources.Favoriteicon;
+            this.pictureBox1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.BackgroundImage")));
+            this.pictureBox1.Image = global::Contactease.Properties.Resources.Landing;
             this.pictureBox1.Location = new System.Drawing.Point(588, -35);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(896, 900);
             this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // lblTitle
             // 
@@ -137,6 +149,16 @@ namespace ContactEase
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "LoginForm";
             this.Text = "Inicio de Sesión";
+            this.Controls.SetChildIndex(this.btnLogin, 0);
+            this.Controls.SetChildIndex(this.txtPassword, 0);
+            this.Controls.SetChildIndex(this.txtUsername, 0);
+            this.Controls.SetChildIndex(this.checkBox1, 0);
+            this.Controls.SetChildIndex(this.pictureBox1, 0);
+            this.Controls.SetChildIndex(this.lblTitle, 0);
+            this.Controls.SetChildIndex(this.label1, 0);
+            this.Controls.SetChildIndex(this.label2, 0);
+            this.Controls.SetChildIndex(this.bottomPanel, 0);
+            this.Controls.SetChildIndex(this.topPanel, 0);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
